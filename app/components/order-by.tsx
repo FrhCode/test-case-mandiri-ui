@@ -22,7 +22,7 @@ export default function OrderBy({}: Props) {
 
   const isOrderByAlphabetical = orderBy === "make,asc";
   const isOrderByEndDate = orderBy === "auction,asc";
-  const isOrderByNew = orderBy === "new,asc";
+  const isOrderByNew = orderBy === "new,desc";
 
   return (
     <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
@@ -91,7 +91,7 @@ export default function OrderBy({}: Props) {
               filterBy,
               seller,
               winner,
-              orderBy: "new,asc",
+              orderBy: "new,desc",
             });
 
             const path = window.location.pathname;

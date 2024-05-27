@@ -1,22 +1,21 @@
 "use client";
-import { auth } from "@/helper/auth";
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownSection,
-  DropdownTrigger,
-} from "@nextui-org/react";
+
 import { Session } from "next-auth";
-import { signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { FaCaretDown, FaSignOutAlt } from "react-icons/fa";
-import { SiSessionize } from "react-icons/si";
-import { FaSellcast } from "react-icons/fa";
 import objectToQueryString from "@/helper/object-to-query-string";
-import { FaLandMineOn } from "react-icons/fa6";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import { ChevronDown } from "lucide-react";
+import { useCreateAuction } from "@/app/hooks/use-create-auction";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 type Props = {
   user?: Partial<Session["user"]>;
@@ -32,70 +31,80 @@ export default function AccountDropdown({ user }: Props) {
   const seller = searchParams.get("seller") ?? "";
   const winner = searchParams.get("winner") ?? "";
 
-  return (
-    <Dropdown placement="bottom-end">
-      <DropdownTrigger>
-        <Button variant="light" endContent={<FaCaretDown />}>
-          {user?.userName}
-        </Button>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="Static Actions">
-        <DropdownSection aria-label={`regular action`} showDivider>
-          <DropdownItem
-            key="Session"
-            startContent={<SiSessionize />}
-            description="Debugging session"
-            onPress={() => {
-              router.push("/session");
-            }}
-          >
-            Session
-          </DropdownItem>
-          <DropdownItem
-            key="My Auctions"
-            startContent={<FaLandMineOn />}
-            description="See your auctions"
-            onPress={() => {
-              const queryparam = objectToQueryString({
-                query,
-                orderBy,
-                seller: user?.userName,
-                winner: "",
-                filterBy,
-              });
+  const onMyAuctionsClick = () => {
+    const queryparam = objectToQueryString({
+      query,
+      orderBy,
+      filterBy,
+      seller: user?.userName,
+      winner,
+    });
 
-              const path = window.location.pathname;
-              router.replace(`${path}?${queryparam}`);
+    const path = window.location.pathname;
+    router.replace(`${path}?${queryparam}`);
+  };
+
+  const [_, setCreateAuctionState] = useCreateAuction();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="flex items-center gap-1">
+          {user?.userName}
+          <span>
+            <ChevronDown size={18} />
+          </span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end" forceMount>
+        <DropdownMenuItem asChild>
+          <Link
+            href={"/session"}
+            className="flex w-full cursor-pointer flex-col !items-start space-y-1"
+          >
+            <p className="text-sm font-medium leading-none">Session</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              Check your session (DEV ONLY)
+            </p>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <button
+            className="flex w-full cursor-pointer flex-col !items-start space-y-1"
+            onClick={onMyAuctionsClick}
+          >
+            <p className="text-sm font-medium leading-none">My Auctions</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              View your auctions
+            </p>
+          </button>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <button
+            className="flex w-full cursor-pointer flex-col !items-start space-y-1"
+            onClick={() => {
+              setCreateAuctionState((prev) => ({
+                ...prev,
+                isModalOpen: true,
+              }));
             }}
           >
-            My Auctions
-          </DropdownItem>
-          <DropdownItem
-            key="Sell My Car"
-            startContent={<FaSellcast />}
-            description="Sell your car in the auction"
-            onPress={() => {
-              router.replace(`/create`);
-            }}
-          >
-            Sell My Car
-          </DropdownItem>
-        </DropdownSection>
-        <DropdownSection aria-label={`danger action`}>
-          <DropdownItem
-            key="delete"
-            className="text-danger"
-            color="danger"
-            startContent={<FaSignOutAlt />}
-            description="Log out from the system"
-            onPress={() => {
-              signOut();
-            }}
-          >
-            Log Out
-          </DropdownItem>
-        </DropdownSection>
-      </DropdownMenu>
-    </Dropdown>
+            <p className="text-sm font-medium leading-none">Sell My Car</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              Sell your car
+            </p>
+          </button>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-destructive"
+          onClick={() => {
+            signOut({ callbackUrl: "/" });
+          }}
+        >
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

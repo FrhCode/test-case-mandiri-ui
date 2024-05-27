@@ -33,20 +33,11 @@ const fetchItem = async ({
     seller,
     winner,
   });
-
-  // const res = await fetch(process.env.API_URL + `/search?${query}`, {
-  //   cache: "no-cache",
-  // });
-
-  // if (!res.ok) {
-  //   throw new Error("Failed to fetch data");
-  // }
-
-  // const data = await res.json();
-
-  // return data as Paging<Item>;
-
   return await fetchWrapper.get<Paging<Item>>(`/search?${query}`);
 };
 
-export default fetchItem;
+const createItem = async (item: FormData) => {
+  return await fetchWrapper.post<Item>("/auctions", item);
+};
+
+export { fetchItem, createItem };

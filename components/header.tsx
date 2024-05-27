@@ -1,26 +1,16 @@
 "use client";
 import objectToQueryString from "@/helper/object-to-query-string";
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownSection,
-  DropdownTrigger,
-  Input,
-} from "@nextui-org/react";
-import { signIn, signOut, useSession } from "next-auth/react";
+
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
 import { useDebounce } from "use-debounce";
-import { FaCaretDown } from "react-icons/fa";
-import { User } from "next-auth";
 import { Session } from "next-auth";
-import { FaSignOutAlt } from "react-icons/fa";
-import { SiSessionize } from "react-icons/si";
 import Link from "next/link";
 import AccountDropdown from "./account-dropdown";
+import { Button } from "./ui/button";
+import { Search } from "lucide-react";
+import { Input } from "./ui/input";
 
 type Props = {
   user?: Partial<Session["user"]>;
@@ -48,44 +38,22 @@ export default function Header({ user }: Props) {
             </Link>
           </div>
 
-          <div className="md:flex md:items-center md:gap-12">
+          <div className="flex items-center gap-4">
             <SearchInput />
 
-            <div className="flex items-center gap-4">
-              {user ? (
-                <AccountDropdown user={user} />
-              ) : (
-                <Button
-                  color="primary"
-                  radius="sm"
-                  className="mt-2"
-                  onPress={() => {
-                    signIn("duende-identity-server6", { callbackUrl: "/" });
-                  }}
-                >
-                  Login
-                </Button>
-              )}
-
-              <div className="block md:hidden">
-                <button className="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
+            {user ? (
+              <AccountDropdown user={user} />
+            ) : (
+              <Button
+                color="primary"
+                // radius="sm"
+                onClick={() => {
+                  signIn("duende-identity-server6", { callbackUrl: "/" });
+                }}
+              >
+                Login
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -119,18 +87,15 @@ function SearchInput() {
   }, [value]);
 
   return (
-    <Input
-      value={text}
-      onChange={(e) => {
-        setText(e.target.value);
-      }}
-      type="text"
-      placeholder="search for products"
-      labelPlacement="outside"
-      endContent={
-        <FaSearch className="pointer-events-none flex-shrink-0 text-lg text-default-400" />
-      }
-      className="hidden lg:block"
-    />
+    <div className="relative ml-auto hidden flex-1 sm:block md:grow-0">
+      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+      <Input
+        type="search"
+        placeholder="Search..."
+        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+    </div>
   );
 }

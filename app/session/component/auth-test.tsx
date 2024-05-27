@@ -1,6 +1,6 @@
 "use client";
 import updateItem from "@/app/actions/update-item-test";
-import { Button } from "@nextui-org/react";
+import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 
 type Props = {};
@@ -12,7 +12,7 @@ export default function AuthTest({}: Props) {
     <div className="space-y-3">
       <Button
         color="primary"
-        onPress={() => {
+        onClick={() => {
           updateItem().then((res) => {
             setResult(res);
           });

@@ -4,7 +4,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import Item from "@/entities/Item";
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import fetchItem from "../actions/fetch-item";
+import { fetchItem } from "../actions/fetch-item";
 import { useSearchParams } from "next/navigation";
 
 type Props = {
@@ -38,8 +38,12 @@ export default function InfiniteScrollAuction({ auction, pageCount }: Props) {
         searchTerm: query,
         orderBy: orderBy,
       });
-      // @ts-ignore
-      setinitialData([...initialData, ...newAuction.results]);
+
+      if ("error" in newAuction) {
+        return;
+      }
+
+      setinitialData([...initialData, ...newAuction.data.results]);
     };
 
     fetchMoreData();

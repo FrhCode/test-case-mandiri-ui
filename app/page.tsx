@@ -1,8 +1,10 @@
-import fetchItem from "./actions/fetch-item";
+import { fetchItem } from "./actions/fetch-item";
 import { Auction } from "./components/auction";
 import OrderBy from "./components/order-by";
 import FilterBy from "./components/filter-by";
 import NoAuctionScreen from "./components/no-auction-screen";
+import DialogCreateAuction from "./components/dialog-create-auction";
+import { notFound } from "next/navigation";
 
 type Props = {
   searchParams: {
@@ -21,7 +23,7 @@ export default async function Home({ searchParams }: Props) {
   const seller = searchParams.seller || "";
   const winner = searchParams.winner || "";
 
-  const { data, error } = await fetchItem({
+  const itemRes = await fetchItem({
     searchTerm: query,
     orderBy,
     filterBy,
@@ -29,9 +31,18 @@ export default async function Home({ searchParams }: Props) {
     winner,
   });
 
-  if (error) {
-    return <div>{error.message}</div>;
+  if ("error" in itemRes) {
+    // if (itemRes.error.status === 500) {
+    //   throw new Error("Internal Server Error");
+    // }
+    return <div>{itemRes.error.message}</div>;
   }
+
+  console.log(
+    itemRes.data.results.map((item) => {
+      return { url: item.imageUrl, id: item.id };
+    }),
+  );
 
   return (
     <>
@@ -44,13 +55,13 @@ export default async function Home({ searchParams }: Props) {
         />
       </div>
       <div className="mt-5">
-        {data.results.length === 0 ? (
+        {itemRes.data.results.length === 0 ? (
           <NoAuctionScreen
             key={`${query}-${orderBy}-${filterBy}-${seller}-${winner}`}
           />
         ) : (
           <Auction
-            data={data}
+            data={itemRes.data}
             key={`${query}-${orderBy}-${filterBy}-${seller}-${winner}-action`}
           />
         )}

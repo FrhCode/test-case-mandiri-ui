@@ -25,14 +25,38 @@ const createAuction = z.object({
       required_error: "ReservePrice is required",
     })
     .positive("invalid reservePrice"),
-  image: z
-    .any()
-    .refine((file: File) => file, { message: "Image is required" })
-    .refine((file: File) => file.size < 1000000, {
-      message: "Image size must be less than 1MB",
-    }),
-  auctionEnd: z.date({ coerce: true, message: "AuctionEnd must be a date" }),
+  image: z.any().superRefine((file: File, ctx) => {
+    if (!file) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Image is required",
+        path: [],
+      });
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "File must be an image",
+        path: [],
+      });
+      return;
+    }
+
+    if (file.size > 1000000) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Image size must be less than 1MB",
+        path: [],
+      });
+      return;
+    }
+  }),
+  auctionEnd: z.string().min(1, "Auction End is required"),
   description: z.string().min(1, "Description is required"),
 });
 
-export default createAuction;
+type CreateAuction = z.infer<typeof createAuction>;
+
+export { createAuction, type CreateAuction };

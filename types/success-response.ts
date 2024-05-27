@@ -1,5 +1,4 @@
 type SuccessResponse<T> = {
-  error: null;
   data: T;
 };
 

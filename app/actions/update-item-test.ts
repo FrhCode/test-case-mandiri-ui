@@ -11,24 +11,20 @@ const updateItem = async () => {
     year: 1999,
   };
 
-  const id = "466e4744-4dc5-4987-aae0-b621acfc5e39";
+  const id = "6a5011a1-fe1f-47df-9a32-b5346b289391";
 
   const session = await auth();
 
-  const res = await fetch(process.env.API_URL + `/auctions/${id}`, {
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/auctions/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.user.id_token}`,
+      Authorization: `Bearer ${session?.user.access_token}`,
     },
     body: JSON.stringify(data),
   });
 
-  if (!res.ok) {
-    return { status: res.status, message: res.statusText };
-  }
-
-  return { message: res.statusText };
+  return { status: res.status, message: res.statusText };
 };
 
 export default updateItem;

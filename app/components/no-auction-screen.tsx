@@ -1,9 +1,9 @@
 "use client";
 import Img from "@/components/image";
-import { Button } from "@nextui-org/react";
 import React from "react";
 import nemo from "@/public/nemo.png";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function NoAuctionScreen() {
   const router = useRouter();
@@ -18,9 +18,9 @@ export default function NoAuctionScreen() {
           <p>Try other keywords or check the other filter.</p>
           <Button
             color="primary"
-            radius="sm"
+            // radius="sm"
             className="mt-2"
-            onPress={() => {
+            onClick={() => {
               const path = window.location.pathname;
               router.replace(`${path}`);
             }}

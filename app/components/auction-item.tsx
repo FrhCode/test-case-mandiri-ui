@@ -3,7 +3,6 @@ import Img from "@/components/image";
 import SuccessBadge from "@/components/success-badge";
 import WarningBadge from "@/components/warning-badge";
 import Item from "@/entities/Item";
-import Image from "next/image";
 import React from "react";
 import Countdown, { zeroPad } from "react-countdown";
 
@@ -41,7 +40,7 @@ export default function AuctionItem({ item }: Props) {
   return (
     <a href="#" className="group col-span-1 block">
       <div className="relative">
-        <Img src={item.imageUrl} />
+        <Img src={`${process.env.NEXT_PUBLIC_API_URL}${item.imageUrl}`} />
         <div className="absolute bottom-2 left-2">
           <Countdown date={item.auctionEnd} renderer={renderer} />
         </div>

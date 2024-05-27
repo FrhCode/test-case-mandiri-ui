@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 
-import { NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -12,11 +11,7 @@ function Providers({
 }>) {
   const router = useRouter();
 
-  return (
-    <NextUIProvider>
-      <SessionProvider>{children}</SessionProvider>
-    </NextUIProvider>
-  );
+  return <SessionProvider>{children}</SessionProvider>;
 }
 
 export default Providers;

@@ -4,6 +4,7 @@ import DuendeIDS6Provider from "next-auth/providers/duende-identity-server6";
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 3600 * 24 * 30,
   },
   providers: [
     DuendeIDS6Provider({
@@ -22,14 +23,16 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user, account, profile, session, trigger }) {
-      // console.log("jwt callback");
-      // console.log({ token, user, account, profile, session, trigger });
+      // if (trigger === "signIn") {
+      //   console.log("jwt callback");
+      //   console.log({ token, user, account, profile, session, trigger });
+      // }
 
       if (profile) {
         token.userName = profile.userName;
       }
       if (account) {
-        token.id_token = account.id_token;
+        token.access_token = account.access_token;
       }
 
       return token;
@@ -38,7 +41,7 @@ export const authOptions: NextAuthOptions = {
     async session({ token, session }) {
       if (token) {
         session.user.userName = token.userName;
-        session.user.id_token = token.id_token;
+        session.user.access_token = token.access_token;
       }
       return session;
     },
