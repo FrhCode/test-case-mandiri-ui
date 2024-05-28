@@ -22,7 +22,7 @@ import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createItem } from "../actions/fetch-item";
+import { createItem } from "../actions/item-service";
 import generateFormData from "@/helper/generate-form-data";
 
 function InnerDialogCreateAuction() {

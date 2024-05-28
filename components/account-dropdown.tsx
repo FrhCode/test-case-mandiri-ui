@@ -13,7 +13,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { ChevronDown } from "lucide-react";
-import { useCreateAuction } from "@/app/hooks/use-create-auction";
+import { useCreateAuction } from "@/app/(main)/hooks/use-create-auction";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 

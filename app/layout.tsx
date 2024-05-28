@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { auth } from "@/helper/auth";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import DialogCreateAuction from "./components/dialog-create-auction";
+import DialogCreateAuction from "./(main)/components/dialog-create-auction";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -26,7 +26,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const isDevelopment = process.env.NODE_ENV === "development";
-  const session = await auth();
 
   return (
     <html lang="en">
@@ -37,17 +36,8 @@ export default async function RootLayout({
           "font-sans",
         )}
       >
-        <Providers>
-          <div className="mb-8 shadow-sm">
-            <Header user={session?.user} />
-          </div>
-          <div className="mx-auto mb-8 max-w-screen-xl px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
-          <Footer />
-        </Providers>
+        <Providers>{children}</Providers>
         <Toaster duration={4000} />
-        <DialogCreateAuction />
       </body>
     </html>
   );

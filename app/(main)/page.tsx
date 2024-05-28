@@ -1,4 +1,4 @@
-import { fetchItem } from "./actions/fetch-item";
+import { fetchItem } from "./actions/item-service";
 import { Auction } from "./components/auction";
 import OrderBy from "./components/order-by";
 import FilterBy from "./components/filter-by";
@@ -32,15 +32,16 @@ export default async function Home({ searchParams }: Props) {
   });
 
   if ("error" in itemRes) {
-    // if (itemRes.error.status === 500) {
-    //   throw new Error("Internal Server Error");
-    // }
     return <div>{itemRes.error.message}</div>;
   }
 
   console.log(
+    "itemRes",
     itemRes.data.results.map((item) => {
-      return { url: item.imageUrl, id: item.id };
+      return {
+        id: item.id,
+        imageUrl: item.imageUrl,
+      };
     }),
   );
 

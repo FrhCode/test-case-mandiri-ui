@@ -1,5 +1,5 @@
 "use client";
-import updateItem from "@/app/actions/update-item-test";
+import updateItem from "@/app/(main)/actions/update-item-test";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 

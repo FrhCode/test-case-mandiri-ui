@@ -9,6 +9,7 @@ type Props = Partial<ComponentProps<typeof Image>> & {
   src: string | StaticImport;
   classNames?: {
     image?: string;
+    wrapper?: string;
   };
 };
 
@@ -18,7 +19,13 @@ export default function Img({ src, classNames, ...rest }: Props) {
   const [source, setsource] = useState(src);
 
   return (
-    <div className="aspect-square w-full overflow-hidden">
+    <div
+      className={cn(
+        "aspect-square w-full overflow-hidden",
+        classNames?.wrapper,
+      )}
+      data-target="wrapper"
+    >
       <Image
         alt=""
         className={cn(

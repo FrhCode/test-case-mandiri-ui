@@ -1,10 +1,10 @@
 "use client";
-import AuctionItem from "@/app/components/auction-item";
+import AuctionItem from "@/app/(main)/components/auction-item";
 import LoadingSpinner from "@/components/loadingSpinner";
 import Item from "@/entities/Item";
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { fetchItem } from "../actions/fetch-item";
+import { fetchItem } from "../actions/item-service";
 import { useSearchParams } from "next/navigation";
 
 type Props = {

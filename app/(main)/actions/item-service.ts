@@ -40,4 +40,12 @@ const createItem = async (item: FormData) => {
   return await fetchWrapper.post<Item>("/auctions", item);
 };
 
-export { fetchItem, createItem };
+const getById = async (id: string) => {
+  return await fetchWrapper.get<Item>(`/auctions/${id}`);
+};
+
+const updateItem = async (id: string, item: FormData) => {
+  return await fetchWrapper.put<Item>(`/auctions/${id}`, item);
+};
+
+export { fetchItem, createItem, getById, updateItem };

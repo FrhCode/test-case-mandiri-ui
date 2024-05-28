@@ -3,6 +3,7 @@ import Img from "@/components/image";
 import SuccessBadge from "@/components/success-badge";
 import WarningBadge from "@/components/warning-badge";
 import Item from "@/entities/Item";
+import Link from "next/link";
 import React from "react";
 import Countdown, { zeroPad } from "react-countdown";
 
@@ -10,7 +11,7 @@ type Props = {
   item: Item;
 };
 
-const renderer = ({
+export const renderer = ({
   hours,
   minutes,
   seconds,
@@ -38,7 +39,7 @@ const renderer = ({
 
 export default function AuctionItem({ item }: Props) {
   return (
-    <a href="#" className="group col-span-1 block">
+    <Link href={`/${item.id}`} className="group col-span-1 block">
       <div className="relative">
         <Img src={`${process.env.NEXT_PUBLIC_API_URL}${item.imageUrl}`} />
         <div className="absolute bottom-2 left-2">
@@ -57,6 +58,6 @@ export default function AuctionItem({ item }: Props) {
           {item.description}
         </p>
       </div>
-    </a>
+    </Link>
   );
 }

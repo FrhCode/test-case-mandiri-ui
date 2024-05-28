@@ -2,7 +2,7 @@ import { cn } from "@/helper/cn";
 import clsx from "clsx";
 import { Label } from "./label";
 import { Input } from "./input";
-import { ComponentProps, forwardRef, useRef } from "react";
+import { useRef } from "react";
 import useSize from "@react-hook/size";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 
@@ -15,10 +15,11 @@ type Props<T extends FieldValues> = {
     wrapper?: string;
   };
   label?: string;
-  type?: ComponentProps<"input">["type"];
   control: Control<T, any>;
   name: keyof T;
   shouldFormatNumber?: boolean;
+  disable?: boolean;
+  type?: string;
 };
 
 const formatter = new Intl.NumberFormat();
@@ -33,6 +34,7 @@ function BasicInput<T extends FieldValues>({
   startContent,
   type,
   shouldFormatNumber,
+  disable,
 }: Props<T>) {
   const startContentRef = useRef(null);
   const [startContentWidth] = useSize(startContentRef);
@@ -117,6 +119,7 @@ function BasicInput<T extends FieldValues>({
               ? `${endContentWidth + 10}px`
               : undefined,
           }}
+          disabled={disable}
         />
       </div>
       {description && error && (

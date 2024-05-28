@@ -3,6 +3,7 @@ import * as React from "react";
 
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 function Providers({
   children,
@@ -11,7 +12,11 @@ function Providers({
 }>) {
   const router = useRouter();
 
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <SessionProvider>
+      <TooltipProvider>{children}</TooltipProvider>
+    </SessionProvider>
+  );
 }
 
 export default Providers;

@@ -14,6 +14,7 @@ type Props<T extends FieldValues> = {
 
   control: Control<T, any>;
   name: keyof T;
+  disable?: boolean;
 };
 
 function BasicTextArea<T extends FieldValues>({
@@ -22,6 +23,7 @@ function BasicTextArea<T extends FieldValues>({
   label,
   control,
   name,
+  disable,
 }: Props<T>) {
   const {
     field: { onBlur, onChange, value, ref },
@@ -51,6 +53,7 @@ function BasicTextArea<T extends FieldValues>({
           onChange={onChange}
           onBlur={() => onBlur()}
           ref={ref}
+          disabled={disable}
         />
       </div>
       {description && error && (

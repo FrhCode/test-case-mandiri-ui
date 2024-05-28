@@ -82,7 +82,7 @@ function SearchInput() {
       seller: seller,
       winner: winner,
     });
-    const path = window.location.pathname;
+    const path = "/";
     router.replace(`${path}?${queryparam}`);
   }, [value]);
 
