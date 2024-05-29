@@ -41,7 +41,7 @@ export default function AccountDropdown({ user }: Props) {
     });
 
     const path = window.location.pathname;
-    router.replace(`${path}?${queryparam}`);
+    router.push(`${path}?${queryparam}`);
   };
 
   const [_, setCreateAuctionState] = useCreateAuction();

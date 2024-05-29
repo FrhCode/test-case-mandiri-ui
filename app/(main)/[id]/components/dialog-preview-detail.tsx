@@ -116,13 +116,6 @@ function DialogPreviewDetail({ data }: Props) {
                   name="auctionEnd"
                   classNames={{ wrapper: "w-full" }}
                 />
-                {/* <BasicInput
-                  label="Image"
-                  type="file"
-                  control={control}
-                  name="image"
-                  classNames={{ wrapper: "col-span-full" }}
-                /> */}
                 <BasicTextArea
                   disable
                   label="Description"
@@ -133,7 +126,7 @@ function DialogPreviewDetail({ data }: Props) {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type="button" variant="ghost">
+                  <Button type="button" variant="default">
                     Close
                   </Button>
                 </DialogClose>

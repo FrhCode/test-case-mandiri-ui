@@ -1,6 +1,6 @@
 "use client";
 import Item from "@/entities/Item";
-import React, { useState } from "react";
+import React from "react";
 import Countdown from "react-countdown";
 import { renderer } from "../../components/auction-item";
 import Img from "@/components/image";
@@ -12,97 +12,80 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Clipboard, OctagonAlert, Pencil, Trash } from "lucide-react";
-import { toast } from "sonner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import DialogPreviewDetail from "./dialog-preview-detail";
-import { useDetailAuction } from "../hooks/use-show-modal-detail";
-import { useEditAuction } from "../hooks/use-show-modal-edit";
 import DialogEditAuction from "./dialog-edit-auctions";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { format } from "date-fns";
+import Bid from "@/entities/bid";
+import BasicInput, { formatter } from "@/components/ui/basic-input";
+import { AuctionDetailActions } from "./auction-detail-actions";
+import { cn } from "@/lib/utils";
+import clsx from "clsx";
+import { BidComponent } from "./bid";
 import { useSession } from "next-auth/react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Session } from "next-auth";
 
 type Props = {
   data: Item;
+  bids: Bid[];
+  user: Session["user"];
 };
 
-export default function Main({ data }: Props) {
-  const onCopyToClipboard = () => {
-    toast("Copied to clipboard");
-    const text = window.location.href;
-    navigator.clipboard.writeText(text);
+type Data = {
+  amount: number;
+};
+
+export default function Main({ data, bids, user }: Props) {
+  const session = useSession();
+
+  const { handleSubmit, control } = useForm<Data>({
+    defaultValues: {
+      amount: 0,
+    },
+  });
+
+  const onSubmit: SubmitHandler<Data> = (data) => {
+    console.log(data);
   };
+  let footer: JSX.Element;
 
-  const [_, setDetailAuctionAtom] = useDetailAuction();
-  const [__, setEditAuctionAtom] = useEditAuction();
-
-  const { data: session } = useSession();
+  if (!user) {
+    footer = (
+      <div className="w-full text-center text-sm text-muted-foreground">
+        Please login to join the auction
+      </div>
+    );
+  } else if (user.userName === data.seller) {
+    footer = (
+      <div className="w-full text-center text-sm text-muted-foreground">
+        Cannot place bid on your own auction
+      </div>
+    );
+  } else {
+    footer = (
+      <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+        <BasicInput
+          type="text"
+          label="Mileage"
+          startContent={
+            <span className="text-sm text-muted-foreground">Rp.</span>
+          }
+          control={control}
+          name="amount"
+          shouldFormatNumber
+        />{" "}
+      </form>
+    );
+  }
 
   return (
     <>
       <DialogPreviewDetail data={data} />
       <DialogEditAuction data={data} />
-      <div className="mx-auto max-w-screen-md px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2">
-          <p className="text-xl font-semibold">{data.make}</p>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant={"ghost"} onClick={onCopyToClipboard}>
-                <Clipboard size={14} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Copy link to clipboard</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant={"ghost"}
-                onClick={() => {
-                  setDetailAuctionAtom({ open: true });
-                }}
-              >
-                <OctagonAlert size={14} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>View detail</TooltipContent>
-          </Tooltip>
-          {session?.user.userName === data.seller && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={"ghost"}
-                  onClick={() => {
-                    setEditAuctionAtom((prev) => ({ ...prev, open: true }));
-                  }}
-                >
-                  <Pencil size={14} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit this item</TooltipContent>
-            </Tooltip>
-          )}
-          {session?.user.userName === data.seller && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={"ghost"}
-                  className="hover:bg-destructive hover:text-destructive-foreground"
-                  onClick={() => {
-                    setEditAuctionAtom((prev) => ({ ...prev, open: true }));
-                  }}
-                >
-                  <Trash size={14} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete this item</TooltipContent>
-            </Tooltip>
-          )}
-        </div>
+      <div className="mx-auto max-w-screen-lg px-4 sm:px-6 lg:px-8">
+        <AuctionDetailActions data={data} />
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">
             Time Remaining:{" "}
@@ -111,22 +94,41 @@ export default function Main({ data }: Props) {
             <Countdown date={data.auctionEnd} renderer={renderer} />
           </span>
         </div>
-        <div className="mt-4 flex flex-col gap-4 md:flex-row">
-          <Img
-            src={`${process.env.NEXT_PUBLIC_API_URL}${data.imageUrl}`}
-            classNames={{ wrapper: "" }}
-          />
+        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-7">
+          <div className="col-span-1 md:col-span-3">
+            <Img
+              src={`${process.env.NEXT_PUBLIC_API_URL}${data.imageUrl}`}
+              classNames={{ wrapper: "" }}
+            />
+          </div>
 
-          <Card className="">
-            <CardHeader>
+          <Card className="col-span-1 flex max-h-[402px] min-w-80 flex-col gap-3 md:col-span-4">
+            <CardHeader className="flex-shrink-0 pb-0">
               <CardTitle>Bid History</CardTitle>
               <CardDescription>Bid history for this item</CardDescription>
             </CardHeader>
-            <CardContent>
-              <span className="text-center text-muted-foreground">
-                There is no bid history, become the first one to bid this item.
-              </span>
+            <CardContent className="flex-1 overflow-hidden">
+              {bids.length === 0 ? (
+                <span className="text-center text-muted-foreground">
+                  There is no bid history, become the first one to bid this
+                  item.
+                </span>
+              ) : (
+                <ScrollArea
+                  className="w-full"
+                  style={{
+                    height: "214px",
+                  }}
+                >
+                  <div className="space-y-2">
+                    {bids.map((item) => {
+                      return <BidComponent item={item} key={item.id} />;
+                    })}
+                  </div>
+                </ScrollArea>
+              )}
             </CardContent>
+            <CardFooter className="flex-shrink-0">{footer}</CardFooter>
           </Card>
         </div>
       </div>

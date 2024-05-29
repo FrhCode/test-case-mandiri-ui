@@ -160,7 +160,12 @@ function InnerDialogCreateAuction() {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type="button" disabled={isSubmitting} variant="ghost">
+                  <Button
+                    type="button"
+                    disabled={isSubmitting}
+                    variant="secondary"
+                    // className="text-primary"
+                  >
                     Close
                   </Button>
                 </DialogClose>

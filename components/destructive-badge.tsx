@@ -1,12 +1,12 @@
-import React from "react";
+import React, { ComponentProps } from "react";
 
 type Props = {
   message: string;
-};
+} & ComponentProps<"span">;
 
-export default function SuccessBadge({ message }: Props) {
+export default function DestructiveBadge({ message }: Props) {
   return (
-    <span className="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700">
+    <span className="inline-flex items-center justify-center rounded-full bg-destructive px-2.5 py-0.5 text-destructive-foreground">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -18,7 +18,7 @@ export default function SuccessBadge({ message }: Props) {
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
         />
       </svg>
 

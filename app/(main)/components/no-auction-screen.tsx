@@ -22,7 +22,7 @@ export default function NoAuctionScreen() {
             className="mt-2"
             onClick={() => {
               const path = window.location.pathname;
-              router.replace(`${path}`);
+              router.push(`${path}`);
             }}
           >
             Remove Filters

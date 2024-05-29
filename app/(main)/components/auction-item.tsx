@@ -1,6 +1,8 @@
 "use client";
+import DestructiveBadge from "@/components/destructive-badge";
 import Img from "@/components/image";
 import SuccessBadge from "@/components/success-badge";
+import { formatter } from "@/components/ui/basic-input";
 import WarningBadge from "@/components/warning-badge";
 import Item from "@/entities/Item";
 import Link from "next/link";
@@ -25,16 +27,33 @@ export const renderer = ({
   days: number;
 }) => {
   if (completed) {
-    // Render a completed state
-    return <SuccessBadge message="Completed" />;
-  } else {
-    // Render a countdown
+    return <DestructiveBadge message="Completed" />;
+  } else if (days === 0 && hours < 6) {
     return (
       <WarningBadge
         message={`${zeroPad(days)}:${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`}
       />
     );
+  } else {
+    return (
+      <SuccessBadge
+        message={`${zeroPad(days)}:${zeroPad(hours)}:${zeroPad(minutes)}:${zeroPad(seconds)}`}
+      />
+    );
   }
+};
+
+export const HigestBid = ({ item }: Props) => {
+  if (item.currentHighBid === 0) {
+    return <DestructiveBadge message="No bid" />;
+  } else if (item.currentHighBid < item.reservePrice) {
+    return (
+      <WarningBadge message={`Rp.${formatter.format(item.currentHighBid)}`} />
+    );
+  }
+  return (
+    <SuccessBadge message={`Rp.${formatter.format(item.currentHighBid)}`} />
+  );
 };
 
 export default function AuctionItem({ item }: Props) {
@@ -44,6 +63,9 @@ export default function AuctionItem({ item }: Props) {
         <Img src={`${process.env.NEXT_PUBLIC_API_URL}${item.imageUrl}`} />
         <div className="absolute bottom-2 left-2">
           <Countdown date={item.auctionEnd} renderer={renderer} />
+        </div>
+        <div className="absolute right-2 top-2">
+          <HigestBid item={item} />
         </div>
       </div>
 

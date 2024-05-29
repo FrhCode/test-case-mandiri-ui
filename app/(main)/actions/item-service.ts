@@ -48,4 +48,8 @@ const updateItem = async (id: string, item: FormData) => {
   return await fetchWrapper.put<Item>(`/auctions/${id}`, item);
 };
 
-export { fetchItem, createItem, getById, updateItem };
+const deleteItem = async (id: string) => {
+  return await fetchWrapper.del<Item>(`/auctions/${id}`);
+};
+
+export { fetchItem, createItem, getById, updateItem, deleteItem };

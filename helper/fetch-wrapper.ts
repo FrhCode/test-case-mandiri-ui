@@ -59,10 +59,30 @@ const put = async <T>(url: string, body: FormData) => {
   }
 };
 
+const del = async <T>(url: string) => {
+  const headers = await generateHeaders();
+
+  const path = `${process.env.NEXT_PUBLIC_API_URL}${url}`;
+
+  try {
+    console.log("before response");
+    const response = await fetch(path, {
+      method: "DELETE",
+      headers,
+    });
+
+    return await handleResponse<T>(response);
+  } catch (e) {
+    console.log(e);
+    return { error: { status: 500, message: "Internal Server Error" } };
+  }
+};
+
 const fetchWrapper = {
   get,
   post,
   put,
+  del,
 };
 
 export default fetchWrapper;

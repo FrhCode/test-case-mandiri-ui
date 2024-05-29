@@ -12,7 +12,7 @@ export function Auction({ data }: Props) {
   return (
     <div className="">
       <InfiniteScrollAuction
-        auction={data.results}
+        initialData={data.results}
         pageCount={data.pageCount}
       />
     </div>

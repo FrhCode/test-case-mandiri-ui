@@ -76,7 +76,7 @@ function InnerDialogAuction({ data }: Props) {
         isSubmitting: false,
       }));
     } else {
-      toast.success("Auction created successfully");
+      toast.success("Auction updated successfully");
       router.refresh();
       setEditAuctionAtom((prev) => ({
         ...prev,
@@ -145,7 +145,11 @@ function InnerDialogAuction({ data }: Props) {
               </div>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button type="button" disabled={isSubmitting} variant="ghost">
+                  <Button
+                    type="button"
+                    disabled={isSubmitting}
+                    variant="secondary"
+                  >
                     Close
                   </Button>
                 </DialogClose>

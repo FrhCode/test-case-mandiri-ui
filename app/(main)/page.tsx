@@ -35,16 +35,6 @@ export default async function Home({ searchParams }: Props) {
     return <div>{itemRes.error.message}</div>;
   }
 
-  console.log(
-    "itemRes",
-    itemRes.data.results.map((item) => {
-      return {
-        id: item.id,
-        imageUrl: item.imageUrl,
-      };
-    }),
-  );
-
   return (
     <>
       <div className="flex flex-col gap-4 lg:flex-row">

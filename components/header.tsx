@@ -3,7 +3,7 @@ import objectToQueryString from "@/helper/object-to-query-string";
 
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { Session } from "next-auth";
 import Link from "next/link";
@@ -48,7 +48,13 @@ export default function Header({ user }: Props) {
                 color="primary"
                 // radius="sm"
                 onClick={() => {
-                  signIn("duende-identity-server6", { callbackUrl: "/" });
+                  signIn(
+                    "duende-identity-server6",
+                    { callbackUrl: "/" },
+                    {
+                      prompt: "login",
+                    },
+                  );
                 }}
               >
                 Login
@@ -74,7 +80,14 @@ function SearchInput() {
   const [value] = useDebounce(text, 1000);
   const router = useRouter();
 
+  const renderCount = useRef(0);
+  const renderMax = process.env.NODE_ENV === "development" ? 2 : 1;
+
   useEffect(() => {
+    if (renderCount.current < renderMax) {
+      renderCount.current += 1;
+      return;
+    }
     const queryparam = objectToQueryString({
       query: value,
       orderBy: orderBy,

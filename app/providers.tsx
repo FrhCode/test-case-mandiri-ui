@@ -4,6 +4,7 @@ import * as React from "react";
 import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { DialogConfirmationContextProviders } from "@/components/providers/dialog-confirmation-context";
 
 function Providers({
   children,
@@ -14,7 +15,9 @@ function Providers({
 
   return (
     <SessionProvider>
-      <TooltipProvider>{children}</TooltipProvider>
+      <DialogConfirmationContextProviders>
+        <TooltipProvider>{children}</TooltipProvider>
+      </DialogConfirmationContextProviders>
     </SessionProvider>
   );
 }

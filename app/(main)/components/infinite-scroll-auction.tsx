@@ -6,13 +6,17 @@ import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { fetchItem } from "../actions/item-service";
 import { useSearchParams } from "next/navigation";
+import { useAuctionList } from "../hooks/use-auction-list";
 
 type Props = {
-  auction: Item[];
+  initialData: Item[];
   pageCount: number;
 };
 
-export default function InfiniteScrollAuction({ auction, pageCount }: Props) {
+export default function InfiniteScrollAuction({
+  initialData,
+  pageCount,
+}: Props) {
   const searchParam = useSearchParams();
 
   const query = searchParam.get("query") || "";
@@ -21,8 +25,14 @@ export default function InfiniteScrollAuction({ auction, pageCount }: Props) {
   const { ref, inView } = useInView({
     threshold: 0,
   });
-  const [initialData, setinitialData] = useState(auction);
+
+  // const [auctions, setAuctions] = useState(initialData);
+  const [auctions, setAuctions] = useAuctionList();
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
+
+  useEffect(() => {
+    setAuctions(initialData);
+  }, []);
 
   useEffect(() => {
     if (inView === false) {
@@ -43,7 +53,8 @@ export default function InfiniteScrollAuction({ auction, pageCount }: Props) {
         return;
       }
 
-      setinitialData([...initialData, ...newAuction.data.results]);
+      // setAuctions([...auctions, ...newAuction.data.results]);
+      setAuctions((prev) => [...prev, ...newAuction.data.results]);
     };
 
     fetchMoreData();
@@ -52,10 +63,12 @@ export default function InfiniteScrollAuction({ auction, pageCount }: Props) {
 
   const isLastPage = currentPageNumber === pageCount;
 
+  console.log(auctions);
+
   return (
     <>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-        {initialData.map(function (item) {
+        {auctions.map(function (item) {
           return <AuctionItem item={item} key={item.id} />;
         })}
       </div>

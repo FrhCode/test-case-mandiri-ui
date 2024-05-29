@@ -32,8 +32,8 @@ export default async function RootLayout({
       <body
         className={cn(
           fontSans.variable,
-          clsx({ "debug-screens": isDevelopment }),
           "font-sans",
+          isDevelopment && "debug-screens",
         )}
       >
         <Providers>{children}</Providers>

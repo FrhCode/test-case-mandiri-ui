@@ -2,7 +2,7 @@ import { cn } from "@/helper/cn";
 import clsx from "clsx";
 import { Label } from "./label";
 import { Input } from "./input";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSize from "@react-hook/size";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 
@@ -22,7 +22,7 @@ type Props<T extends FieldValues> = {
   type?: string;
 };
 
-const formatter = new Intl.NumberFormat();
+export const formatter = new Intl.NumberFormat();
 
 function BasicInput<T extends FieldValues>({
   control,
@@ -36,11 +36,7 @@ function BasicInput<T extends FieldValues>({
   shouldFormatNumber,
   disable,
 }: Props<T>) {
-  const startContentRef = useRef(null);
-  const [startContentWidth] = useSize(startContentRef);
-
-  const endContentRef = useRef(null);
-  const [endContentWidth] = useSize(endContentRef);
+  const uniqueId = useRef(`${name as string}`);
 
   const {
     field: { onBlur, onChange, value, ref },
@@ -72,6 +68,28 @@ function BasicInput<T extends FieldValues>({
     onChange(e.target.value);
   };
 
+  const startContentQuery = `[data-target=startContent-${name as string}-${uniqueId.current}]`;
+  const endContentQuery = `[data-target=endContent-${name as string}-${uniqueId.current}]`;
+
+  const [startContentEl, setStartContentEl] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const [endContentEl, setEndContentEl] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const startContentEl =
+      document.querySelector<HTMLDivElement>(startContentQuery);
+    const endContentEl =
+      document.querySelector<HTMLDivElement>(endContentQuery);
+
+    setStartContentEl(startContentEl);
+    setEndContentEl(endContentEl);
+  }, []);
+
+  if (name === "amount") {
+    console.log(startContentEl);
+  }
+
   return (
     <div className={cn("space-y-2", classNames?.wrapper)} data-target="wrapper">
       {label && (
@@ -91,7 +109,7 @@ function BasicInput<T extends FieldValues>({
         {startContent && (
           <div
             className="absolute left-2 top-2/4 -translate-y-2/4"
-            ref={startContentRef}
+            data-target={`startContent-${name as string}-${uniqueId.current}`}
           >
             {startContent}
           </div>
@@ -99,7 +117,7 @@ function BasicInput<T extends FieldValues>({
         {endContent && (
           <div
             className="absolute right-2 top-2/4 -translate-y-2/4"
-            ref={endContentRef}
+            data-target={`endContent-${name as string}-${uniqueId.current}`}
           >
             {endContent}
           </div>
@@ -112,11 +130,11 @@ function BasicInput<T extends FieldValues>({
           onChange={onInputChange}
           className={cn(classNames?.input)}
           style={{
-            paddingLeft: startContentWidth
-              ? `${startContentWidth + 10}px`
+            paddingLeft: startContentEl
+              ? startContentEl.getBoundingClientRect().width + 10 + "px"
               : undefined,
-            paddingRight: endContentWidth
-              ? `${endContentWidth + 10}px`
+            paddingRight: endContentEl
+              ? endContentEl.getBoundingClientRect().width + 10 + "px"
               : undefined,
           }}
           disabled={disable}
