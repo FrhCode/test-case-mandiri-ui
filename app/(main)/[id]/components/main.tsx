@@ -26,28 +26,50 @@ import { BidComponent } from "./bid";
 import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Session } from "next-auth";
+import generateFormData from "@/helper/generate-form-data";
+import { useParams, useRouter } from "next/navigation";
+import { createBid } from "../../actions/bid-service";
+import { toast } from "sonner";
 
 type Props = {
   data: Item;
   bids: Bid[];
-  user: Session["user"];
+  user: Session["user"] | undefined;
 };
 
 type Data = {
   amount: number;
 };
 
-export default function Main({ data, bids, user }: Props) {
-  const session = useSession();
+import { AnimatePresence } from "framer-motion";
 
-  const { handleSubmit, control } = useForm<Data>({
+export default function Main({ data, bids, user }: Props) {
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<Data>({
     defaultValues: {
       amount: 0,
     },
   });
 
-  const onSubmit: SubmitHandler<Data> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<Data> = async (data) => {
+    const formData = generateFormData(data);
+
+    const res = await createBid(id, formData);
+
+    if ("error" in res) {
+      toast.error(res.error.message);
+      return;
+    } else {
+      toast.success("Bid placed successfully");
+      router.refresh();
+      reset();
+    }
   };
   let footer: JSX.Element;
 
@@ -67,15 +89,15 @@ export default function Main({ data, bids, user }: Props) {
     footer = (
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
         <BasicInput
+          disable={isSubmitting}
           type="text"
-          label="Mileage"
           startContent={
             <span className="text-sm text-muted-foreground">Rp.</span>
           }
           control={control}
           name="amount"
           shouldFormatNumber
-        />{" "}
+        />
       </form>
     );
   }
@@ -121,9 +143,11 @@ export default function Main({ data, bids, user }: Props) {
                   }}
                 >
                   <div className="space-y-2">
-                    {bids.map((item) => {
-                      return <BidComponent item={item} key={item.id} />;
-                    })}
+                    <AnimatePresence initial={false}>
+                      {bids.map((item) => {
+                        return <BidComponent item={item} key={item.id} />;
+                      })}
+                    </AnimatePresence>
                   </div>
                 </ScrollArea>
               )}

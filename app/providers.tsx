@@ -5,18 +5,19 @@ import { SessionProvider } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DialogConfirmationContextProviders } from "@/components/providers/dialog-confirmation-context";
+import SignalRProviders from "./SignalRProviders";
 
 function Providers({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
-
   return (
     <SessionProvider>
       <DialogConfirmationContextProviders>
-        <TooltipProvider>{children}</TooltipProvider>
+        <SignalRProviders>
+          <TooltipProvider>{children}</TooltipProvider>
+        </SignalRProviders>
       </DialogConfirmationContextProviders>
     </SessionProvider>
   );

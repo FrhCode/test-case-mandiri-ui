@@ -2,7 +2,7 @@ import { cn } from "@/helper/cn";
 import clsx from "clsx";
 import { Label } from "./label";
 import { Input } from "./input";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import useSize from "@react-hook/size";
 import { Control, FieldValues, Path, useController } from "react-hook-form";
 
@@ -36,8 +36,6 @@ function BasicInput<T extends FieldValues>({
   shouldFormatNumber,
   disable,
 }: Props<T>) {
-  const uniqueId = useRef(`${name as string}`);
-
   const {
     field: { onBlur, onChange, value, ref },
     fieldState: { error },
@@ -68,28 +66,6 @@ function BasicInput<T extends FieldValues>({
     onChange(e.target.value);
   };
 
-  const startContentQuery = `[data-target=startContent-${name as string}-${uniqueId.current}]`;
-  const endContentQuery = `[data-target=endContent-${name as string}-${uniqueId.current}]`;
-
-  const [startContentEl, setStartContentEl] = useState<HTMLDivElement | null>(
-    null,
-  );
-  const [endContentEl, setEndContentEl] = useState<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const startContentEl =
-      document.querySelector<HTMLDivElement>(startContentQuery);
-    const endContentEl =
-      document.querySelector<HTMLDivElement>(endContentQuery);
-
-    setStartContentEl(startContentEl);
-    setEndContentEl(endContentEl);
-  }, []);
-
-  if (name === "amount") {
-    console.log(startContentEl);
-  }
-
   return (
     <div className={cn("space-y-2", classNames?.wrapper)} data-target="wrapper">
       {label && (
@@ -107,18 +83,12 @@ function BasicInput<T extends FieldValues>({
       )}
       <div className="relative">
         {startContent && (
-          <div
-            className="absolute left-2 top-2/4 -translate-y-2/4"
-            data-target={`startContent-${name as string}-${uniqueId.current}`}
-          >
+          <div className="absolute left-2 top-2/4 w-8 -translate-y-2/4">
             {startContent}
           </div>
         )}
         {endContent && (
-          <div
-            className="absolute right-2 top-2/4 -translate-y-2/4"
-            data-target={`endContent-${name as string}-${uniqueId.current}`}
-          >
+          <div className="absolute right-2 top-2/4 w-8 -translate-y-2/4">
             {endContent}
           </div>
         )}
@@ -128,15 +98,11 @@ function BasicInput<T extends FieldValues>({
           onBlur={() => onBlur()}
           type={type}
           onChange={onInputChange}
-          className={cn(classNames?.input)}
-          style={{
-            paddingLeft: startContentEl
-              ? startContentEl.getBoundingClientRect().width + 10 + "px"
-              : undefined,
-            paddingRight: endContentEl
-              ? endContentEl.getBoundingClientRect().width + 10 + "px"
-              : undefined,
-          }}
+          className={cn(
+            startContent && "pl-8",
+            endContent && "pr-8",
+            classNames?.input,
+          )}
           disabled={disable}
         />
       </div>

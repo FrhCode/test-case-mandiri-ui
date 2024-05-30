@@ -33,6 +33,29 @@ export function AuctionDetailActions({ data }: Props) {
   const { data: session } = useSession();
   const { confirm } = useDialogConfirmation();
 
+  const onDelete = async () => {
+    const result = await confirm(
+      <span>Are you sure you want to delete this item?</span>,
+      <span>
+        By deleting this item, you will lose all the data related to this item.
+      </span>,
+    );
+
+    if (!result) {
+      return;
+    }
+
+    const itemRes = await deleteItem(data.id);
+
+    if ("error" in itemRes) {
+      toast.error(itemRes.error.message);
+      return;
+    }
+
+    toast.success("Item deleted successfully");
+    router.push("/");
+  };
+
   return (
     <div className="flex items-center gap-2">
       <p className="text-xl font-semibold">{data.make}</p>
@@ -78,29 +101,7 @@ export function AuctionDetailActions({ data }: Props) {
             <Button
               variant={"ghost"}
               className="hover:bg-destructive hover:text-destructive-foreground"
-              onClick={async () => {
-                const result = await confirm(
-                  <span>Are you sure you want to delete this item?</span>,
-                  <span>
-                    By deleting this item, you will lose all the data related to
-                    this item.
-                  </span>,
-                );
-
-                if (!result) {
-                  return;
-                }
-
-                const itemRes = await deleteItem(data.id);
-
-                if ("error" in itemRes) {
-                  toast.error(itemRes.error.message);
-                  return;
-                }
-
-                toast.success("Item deleted successfully");
-                router.push("/");
-              }}
+              onClick={onDelete}
             >
               <Trash size={14} />
             </Button>

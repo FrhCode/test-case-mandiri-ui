@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { format } from "date-fns";
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   item: Bid;
@@ -11,7 +12,11 @@ type Props = {
 
 export function BidComponent({ item }: Props) {
   return (
-    <div
+    <motion.div
+      layout
+      initial={{ opacity: 0, height: "95%" }}
+      animate={{ opacity: 1, height: "100%" }}
+      exit={{ opacity: 0, height: "95%" }}
       className={cn(
         "flex items-center justify-between rounded px-3 py-2",
         clsx({
@@ -37,6 +42,6 @@ export function BidComponent({ item }: Props) {
         </p>
       </div>
       <div className="font-bold">Rp.{formatter.format(item.amount)}</div>
-    </div>
+    </motion.div>
   );
 }

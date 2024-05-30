@@ -1,3 +1,4 @@
+"use server";
 import Bid from "@/entities/bid";
 import fetchWrapper from "@/helper/fetch-wrapper";
 
