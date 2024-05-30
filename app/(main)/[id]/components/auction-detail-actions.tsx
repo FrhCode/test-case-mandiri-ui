@@ -14,12 +14,11 @@ import { useDetailAuction } from "../hooks/use-show-modal-detail";
 import { useEditAuction } from "../hooks/use-show-modal-edit";
 import { Button } from "@/components/ui/button";
 import Item from "@/entities/Item";
+import { useAuctionDetail } from "../hooks/use-auction-detail";
 
-type Props = {
-  data: Item;
-};
+export function AuctionDetailActions() {
+  const [{ data }] = useAuctionDetail();
 
-export function AuctionDetailActions({ data }: Props) {
   const router = useRouter();
   const onCopyToClipboard = () => {
     toast("Copied to clipboard");

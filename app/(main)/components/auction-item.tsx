@@ -5,6 +5,7 @@ import SuccessBadge from "@/components/success-badge";
 import { formatter } from "@/components/ui/basic-input";
 import WarningBadge from "@/components/warning-badge";
 import Item from "@/entities/Item";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React from "react";
 import Countdown, { zeroPad } from "react-countdown";
@@ -65,7 +66,16 @@ export default function AuctionItem({ item }: Props) {
           <Countdown date={item.auctionEnd} renderer={renderer} />
         </div>
         <div className="absolute right-2 top-2">
-          <HigestBid item={item} />
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.div
+              key={item.currentHighBid}
+              initial={{ scale: "95%", opacity: 0 }}
+              animate={{ scale: "100%", opacity: 1 }}
+              exit={{ scale: "95%", opacity: 0 }}
+            >
+              <HigestBid item={item} />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 

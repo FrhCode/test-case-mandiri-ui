@@ -15,8 +15,6 @@ export default async function Page({ params: { id } }: Props) {
   const bids = await getBid(id);
   const session = await auth();
 
-  console.log("item", item);
-
   if ("error" in item) {
     return <div>{item.error.message}</div>;
   } else if ("error" in bids) {

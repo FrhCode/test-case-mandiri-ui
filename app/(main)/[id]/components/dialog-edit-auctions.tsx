@@ -23,44 +23,29 @@ import { updateItem } from "../../actions/item-service";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { LoaderCircle } from "lucide-react";
+import { useAuctionDetail } from "../hooks/use-auction-detail";
 
-type Props = {
-  data: Item;
-};
+export default function DialogEditAuction() {
+  const router = useRouter();
+  const [auction] = useAuctionDetail();
 
-export default function DialogEditAuction({ data }: Props) {
-  const [{ open, isSubmitting }, _] = useEditAuction();
-
-  const [key, setKey] = useState(1);
+  const { handleSubmit, control, reset, watch, setValue } =
+    useForm<UpdateAuction>({
+      resolver: zodResolver(updateAuction),
+      defaultValues: {},
+    });
 
   useEffect(() => {
-    if (open === true) return;
-
-    const timeOut = setTimeout(() => {
-      setKey((prev) => prev + 1);
-    }, 300);
-
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, [open]);
-  return <InnerDialogAuction data={data} />;
-}
-
-function InnerDialogAuction({ data }: Props) {
-  const router = useRouter();
-  const { handleSubmit, control } = useForm<UpdateAuction>({
-    resolver: zodResolver(updateAuction),
-    defaultValues: {
-      make: data.make,
-      model: data.model,
-      color: data.color,
-      year: data.year,
-      mileage: data.mileage,
-      description: data.description,
-      id: data.id,
-    },
-  });
+    reset({
+      make: auction.data.make,
+      model: auction.data.model,
+      color: auction.data.color,
+      year: auction.data.year,
+      mileage: auction.data.mileage,
+      description: auction.data.description,
+      id: auction.data.id,
+    });
+  }, [auction]);
 
   const [{ open, isSubmitting }, setEditAuctionAtom] = useEditAuction();
 
@@ -89,6 +74,11 @@ function InnerDialogAuction({ data }: Props) {
   const onOpenChange = (isOpen: boolean) => {
     setEditAuctionAtom((prev) => ({ ...prev, open: isOpen }));
   };
+
+  useEffect(() => {
+    if (open === false) return;
+    reset();
+  }, [open]);
 
   return (
     <form>

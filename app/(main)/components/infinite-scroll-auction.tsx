@@ -6,17 +6,14 @@ import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { fetchItem } from "../actions/item-service";
 import { useSearchParams } from "next/navigation";
+import { useAtom } from "jotai";
 import { useAuctionList } from "../hooks/use-auction-list";
 
 type Props = {
-  initialData: Item[];
   pageCount: number;
 };
 
-export default function InfiniteScrollAuction({
-  initialData,
-  pageCount,
-}: Props) {
+export default function InfiniteScrollAuction({ pageCount }: Props) {
   const searchParam = useSearchParams();
 
   const query = searchParam.get("query") || "";
@@ -26,15 +23,8 @@ export default function InfiniteScrollAuction({
     threshold: 0,
   });
 
-  // const [auctions, setAuctions] = useState(initialData);
   const [auctions, setAuctions] = useAuctionList();
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
-
-  console.log("auctions", auctions);
-
-  useEffect(() => {
-    setAuctions(initialData);
-  }, []);
 
   useEffect(() => {
     if (inView === false) {

@@ -5,12 +5,12 @@ const handleResponse = async <T>(
   response: Response,
 ): Promise<SuccessResponse<T> | ErrorResponse> => {
   const text = await response.text();
-  const data = (text && JSON.parse(text)) as T;
 
   if (response.ok) {
+    const data = (text && JSON.parse(text)) as T;
     return { data };
   } else {
-    console.log("response", data);
+    const data = text;
 
     return {
       error: {

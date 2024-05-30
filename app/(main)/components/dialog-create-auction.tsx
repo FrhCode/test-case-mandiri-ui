@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createItem } from "../actions/item-service";
 import generateFormData from "@/helper/generate-form-data";
+import { addDays } from "date-fns";
 
 function InnerDialogCreateAuction() {
   const router = useRouter();
@@ -37,7 +38,7 @@ function InnerDialogCreateAuction() {
       mileage: 3000,
       reservePrice: 90300000,
       image: "",
-      auctionEnd: new Date().toISOString(),
+      auctionEnd: addDays(new Date(), 1).toISOString(),
       description:
         "The Toyota Innova is a versatile and spacious multi-purpose vehicle known for its reliability, comfort, and advanced safety features, making it perfect for families and group travel.",
     },
@@ -59,7 +60,7 @@ function InnerDialogCreateAuction() {
       }));
     } else {
       toast.success("Auction created successfully");
-      router.replace("/");
+      router.refresh();
       setCreateAuctionState((prev) => ({
         ...prev,
         isSubmitting: false,

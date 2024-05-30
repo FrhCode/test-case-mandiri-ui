@@ -47,7 +47,7 @@ export default function FilterBy({}: Props) {
             });
 
             const path = window.location.pathname;
-            router.replace(`${path}?${queryparam}`);
+            router.push(`${path}?${queryparam}`);
           }}
         >
           <FaFire />
@@ -71,7 +71,7 @@ export default function FilterBy({}: Props) {
             });
 
             const path = window.location.pathname;
-            router.replace(`${path}?${queryparam}`);
+            router.push(`${path}?${queryparam}`);
           }}
         >
           <FaBusinessTime />
@@ -95,7 +95,7 @@ export default function FilterBy({}: Props) {
             });
 
             const path = window.location.pathname;
-            router.replace(`${path}?${queryparam}`);
+            router.push(`${path}?${queryparam}`);
           }}
         >
           <FaCompress />

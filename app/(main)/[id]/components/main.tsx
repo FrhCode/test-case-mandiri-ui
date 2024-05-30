@@ -1,6 +1,6 @@
 "use client";
 import Item from "@/entities/Item";
-import React from "react";
+import React, { useEffect } from "react";
 import Countdown from "react-countdown";
 import { renderer } from "../../components/auction-item";
 import Img from "@/components/image";
@@ -14,16 +14,11 @@ import {
 } from "@/components/ui/card";
 import DialogPreviewDetail from "./dialog-preview-detail";
 import DialogEditAuction from "./dialog-edit-auctions";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { format } from "date-fns";
 import Bid from "@/entities/bid";
-import BasicInput, { formatter } from "@/components/ui/basic-input";
+import BasicInput from "@/components/ui/basic-input";
 import { AuctionDetailActions } from "./auction-detail-actions";
-import { cn } from "@/lib/utils";
-import clsx from "clsx";
 import { BidComponent } from "./bid";
-import { useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Session } from "next-auth";
 import generateFormData from "@/helper/generate-form-data";
@@ -42,14 +37,26 @@ type Data = {
 };
 
 import { AnimatePresence } from "framer-motion";
+import { useHydrateAtoms } from "jotai/utils";
+import { auctionDetaild, useAuctionDetail } from "../hooks/use-auction-detail";
 
 export default function Main({ data, bids, user }: Props) {
+  useHydrateAtoms([[auctionDetaild, { bids, data }]]);
+
+  const [{ bids: bidsSocket, data: dataSocket }, setAuctionDetail] =
+    useAuctionDetail();
+
+  useEffect(() => {
+    setAuctionDetail({ bids, data });
+  }, [JSON.stringify(bids), JSON.stringify(data)]);
+
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const {
     handleSubmit,
     control,
     reset,
+    setFocus,
     formState: { isSubmitting },
   } = useForm<Data>({
     defaultValues: {
@@ -58,6 +65,11 @@ export default function Main({ data, bids, user }: Props) {
   });
 
   const onSubmit: SubmitHandler<Data> = async (data) => {
+    if (data.amount < dataSocket.currentHighBid) {
+      toast.error("Bid must be higher than the current highest bid");
+      setFocus("amount");
+      return;
+    }
     const formData = generateFormData(data);
 
     const res = await createBid(id, formData);
@@ -73,10 +85,21 @@ export default function Main({ data, bids, user }: Props) {
   };
   let footer: JSX.Element;
 
+  console.log("data", data);
+  console.log("auctionDate", new Date(data.auctionEnd));
+  console.log("newDate", new Date());
+  console.log("result", new Date(data.auctionEnd) > new Date());
+
   if (!user) {
     footer = (
       <div className="w-full text-center text-sm text-muted-foreground">
         Please login to join the auction
+      </div>
+    );
+  } else if (new Date(data.auctionEnd) < new Date()) {
+    footer = (
+      <div className="w-full text-center text-sm text-muted-foreground">
+        Auction has been finished
       </div>
     );
   } else if (user.userName === data.seller) {
@@ -104,10 +127,10 @@ export default function Main({ data, bids, user }: Props) {
 
   return (
     <>
-      <DialogPreviewDetail data={data} />
-      <DialogEditAuction data={data} />
+      <DialogPreviewDetail />
+      <DialogEditAuction key={JSON.stringify(data)} />
       <div className="mx-auto max-w-screen-lg px-4 sm:px-6 lg:px-8">
-        <AuctionDetailActions data={data} />
+        <AuctionDetailActions />
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">
             Time Remaining:{" "}
@@ -130,7 +153,7 @@ export default function Main({ data, bids, user }: Props) {
               <CardDescription>Bid history for this item</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden">
-              {bids.length === 0 ? (
+              {bidsSocket.length === 0 ? (
                 <span className="text-center text-muted-foreground">
                   There is no bid history, become the first one to bid this
                   item.
@@ -144,7 +167,7 @@ export default function Main({ data, bids, user }: Props) {
                 >
                   <div className="space-y-2">
                     <AnimatePresence initial={false}>
-                      {bids.map((item) => {
+                      {bidsSocket.map((item) => {
                         return <BidComponent item={item} key={item.id} />;
                       })}
                     </AnimatePresence>

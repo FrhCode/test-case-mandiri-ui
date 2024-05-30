@@ -35,9 +35,10 @@ export default async function RootLayout({
           "font-sans",
           isDevelopment && "debug-screens",
         )}
+        suppressHydrationWarning
       >
         <Providers>{children}</Providers>
-        <Toaster duration={4000} />
+        <Toaster duration={4000} richColors />
       </body>
     </html>
   );

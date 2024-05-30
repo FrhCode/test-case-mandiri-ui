@@ -47,7 +47,7 @@ export default function OrderBy({}: Props) {
             });
 
             const path = window.location.pathname;
-            router.replace(`${path}?${queryparam}`);
+            router.push(`${path}?${queryparam}`);
           }}
         >
           <FaSortAlphaDown />
@@ -71,7 +71,7 @@ export default function OrderBy({}: Props) {
             });
 
             const path = window.location.pathname;
-            router.replace(`${path}?${queryparam}`);
+            router.push(`${path}?${queryparam}`);
           }}
         >
           <FaRegCalendarTimes />
@@ -95,7 +95,7 @@ export default function OrderBy({}: Props) {
             });
 
             const path = window.location.pathname;
-            router.replace(`${path}?${queryparam}`);
+            router.push(`${path}?${queryparam}`);
           }}
         >
           <FaSquareHackerNews />

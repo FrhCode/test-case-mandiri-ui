@@ -6,3 +6,5 @@ const auctionListItem = atom([] as Item[]);
 export const useAuctionList = () => {
   return useAtom(auctionListItem);
 };
+
+export { auctionListItem };

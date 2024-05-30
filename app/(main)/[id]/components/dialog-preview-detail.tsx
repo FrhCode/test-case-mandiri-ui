@@ -19,26 +19,29 @@ import { CreateAuction, createAuction } from "../../scheme/createAuction";
 import Item from "@/entities/Item";
 import { format } from "date-fns";
 import { useDetailAuction } from "../hooks/use-show-modal-detail";
+import { useAuctionDetail } from "../hooks/use-auction-detail";
+import { useEffect } from "react";
 
-type Props = {
-  data: Item;
-};
+function DialogPreviewDetail() {
+  const [auction] = useAuctionDetail();
 
-function DialogPreviewDetail({ data }: Props) {
-  const { handleSubmit, control } = useForm<CreateAuction>({
+  const { handleSubmit, control, reset } = useForm<CreateAuction>({
     resolver: zodResolver(createAuction),
-    defaultValues: {
-      make: data.make,
-      model: data.model,
-      color: data.color,
-      year: data.year,
-      mileage: data.mileage,
-      reservePrice: data.reservePrice,
-      image: "",
-      auctionEnd: format(data.auctionEnd as unknown as string, "PPP"),
-      description: data.description,
-    },
+    defaultValues: {},
   });
+
+  useEffect(() => {
+    reset({
+      make: auction.data.make,
+      model: auction.data.model,
+      color: auction.data.color,
+      year: auction.data.year,
+      mileage: auction.data.mileage,
+      description: auction.data.description,
+      auctionEnd: format(new Date(auction.data.auctionEnd), "yyyy-MM-dd"),
+      reservePrice: auction.data.reservePrice,
+    });
+  }, [auction]);
 
   const [{ open }, setDetailAuctionAtom] = useDetailAuction();
 

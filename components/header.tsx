@@ -96,7 +96,7 @@ function SearchInput() {
       winner: winner,
     });
     const path = "/";
-    router.replace(`${path}?${queryparam}`);
+    router.push(`${path}?${queryparam}`);
   }, [value]);
 
   return (

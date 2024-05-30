@@ -3,8 +3,6 @@ import { Auction } from "./components/auction";
 import OrderBy from "./components/order-by";
 import FilterBy from "./components/filter-by";
 import NoAuctionScreen from "./components/no-auction-screen";
-import DialogCreateAuction from "./components/dialog-create-auction";
-import { notFound } from "next/navigation";
 
 type Props = {
   searchParams: {
@@ -48,7 +46,7 @@ export default async function Home({ searchParams }: Props) {
       <div className="mt-5">
         {itemRes.data.results.length === 0 ? (
           <NoAuctionScreen
-            key={`${query}-${orderBy}-${filterBy}-${seller}-${winner}`}
+            key={`${query}-${orderBy}-${filterBy}-${seller}-${winner}-no-auction-screen`}
           />
         ) : (
           <Auction
