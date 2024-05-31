@@ -1,4 +1,4 @@
-FROM node:18.16.1-bullseye
+FROM node:18.17.0-bullseye
 
 RUN apt-get update -y && apt-get install -y \
 	dos2unix

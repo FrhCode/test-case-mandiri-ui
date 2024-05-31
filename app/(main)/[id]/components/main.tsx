@@ -85,11 +85,6 @@ export default function Main({ data, bids, user }: Props) {
   };
   let footer: JSX.Element;
 
-  console.log("data", data);
-  console.log("auctionDate", new Date(data.auctionEnd));
-  console.log("newDate", new Date());
-  console.log("result", new Date(data.auctionEnd) > new Date());
-
   if (!user) {
     footer = (
       <div className="w-full text-center text-sm text-muted-foreground">
