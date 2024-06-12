@@ -4,8 +4,8 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "mandiri-api.farhandev.cloud",
+        protocol: "http",
+        hostname: "mandiri-api.farhandev.my.id",
         port: "",
         pathname: "/**",
       },

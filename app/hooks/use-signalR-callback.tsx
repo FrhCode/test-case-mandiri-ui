@@ -58,9 +58,6 @@ export default function useSignalRCallback() {
   };
 
   const auctionCreated = (auction: AuctionCreated) => {
-    console.log("cuurent user", session);
-    console.log("auction seller", auction.seller);
-
     if (session?.data?.user.userName === auction.seller) {
       return;
     }

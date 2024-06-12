@@ -18,9 +18,7 @@ export function Auction({ data }: Props) {
 
   useEffect(() => {
     setAuction(data.results);
-  }, [JSON.stringify(data.results)]);
-
-  // const session = useSession();
+  }, [data, setAuction]);
 
   return (
     <div className="">

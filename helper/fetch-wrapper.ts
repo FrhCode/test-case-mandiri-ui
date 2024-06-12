@@ -25,7 +25,6 @@ const post = async <T>(url: string, body: FormData) => {
   const path = `${process.env.NEXT_PUBLIC_API_URL}${url}`;
 
   try {
-    console.log("before response");
     const response = await fetch(path, {
       method: "POST",
       headers,
@@ -45,7 +44,6 @@ const put = async <T>(url: string, body: FormData) => {
   const path = `${process.env.NEXT_PUBLIC_API_URL}${url}`;
 
   try {
-    console.log("before response");
     const response = await fetch(path, {
       method: "PUT",
       headers,
@@ -65,7 +63,6 @@ const del = async <T>(url: string) => {
   const path = `${process.env.NEXT_PUBLIC_API_URL}${url}`;
 
   try {
-    console.log("before response");
     const response = await fetch(path, {
       method: "DELETE",
       headers,
